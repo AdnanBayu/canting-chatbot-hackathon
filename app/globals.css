@@ -8,7 +8,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+<<<<<<< HEAD
   --font-sans: var(--font-inter);
+=======
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+>>>>>>> 7ba1ff0f89e89f682581db305853f025c9a52648
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,5 +26,9 @@
 body {
   background: var(--background);
   color: var(--foreground);
+<<<<<<< HEAD
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+=======
+  font-family: Arial, Helvetica, sans-serif;
+>>>>>>> 7ba1ff0f89e89f682581db305853f025c9a52648
 }
