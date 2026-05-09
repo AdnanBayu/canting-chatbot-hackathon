@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -9,7 +10,9 @@ import {
   Truck,
   BookOpen,
   BarChart3,
-  MessageSquare
+  MessageSquare,
+  Menu,
+  X
 } from 'lucide-react';
 
 const menuItems = [
@@ -24,44 +27,71 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => setIsOpen(!isOpen);
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-100 flex flex-col hidden lg:flex h-screen sticky top-0 shrink-0">
+    <>
+      {/* Mobile Toggle Button */}
+      <button
+        onClick={toggleSidebar}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#0D3B2E] text-white rounded-md shadow-lg"
+      >
+        {isOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
 
-      {/* Title Bar */}
-      <div className="p-6">
-        <h1 className="text-xl font-bold text-[#0D3B2E] tracking-tight">CANTING</h1>
-        <p className="text-xs text-gray-400 mt-1">Pengelolaan UMKM Batik Surabaya</p>
-      </div>
+      {/* Backdrop for mobile */}
+      {isOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm transition-opacity"
+          onClick={toggleSidebar}
+        />
+      )}
 
-      {/* Menu Items */}
-      <nav className="flex-1 mt-4">
-        {menuItems.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className={`w-full flex items-center gap-4 px-6 py-4 text-sm font-medium transition-all border-r-4 ${pathname === item.href
-              ? 'bg-[#EBF2F0] text-[#0D3B2E] border-[#0D3B2E]'
-              : 'text-gray-500 border-transparent hover:bg-gray-50'
-              }`}
-          >
-            {item.icon}
-            {item.name}
-          </Link>
-        ))}
-      </nav>
+      {/* Sidebar Content */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 flex flex-col h-screen 
+        transition-transform duration-300 ease-in-out transform
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:translate-x-0 lg:sticky lg:top-0 lg:z-0 lg:shrink-0
+      `}>
 
-      {/* User Profile */}
-      <div className="p-6 border-t border-gray-100 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" alt="Pak Budi" />
+        {/* Title Bar */}
+        <div className="p-6 pt-16 lg:pt-6">
+          <h1 className="text-xl font-bold text-[#0D3B2E] tracking-tight">CANTING</h1>
+          <p className="text-xs text-gray-400 mt-1">Pengelolaan UMKM Batik Surabaya</p>
         </div>
-        <div>
-          <p className="text-sm font-bold">Pak Arif</p>
-          <p className="text-[10px] text-gray-500 uppercase tracking-wider">UMKM Batik Karangmenjangan</p>
+
+        {/* Menu Items */}
+        <nav className="flex-1 mt-4 overflow-y-auto">
+          {menuItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              onClick={() => setIsOpen(false)}
+              className={`w-full flex items-center gap-4 px-6 py-4 text-sm font-medium transition-all border-r-4 ${pathname === item.href
+                ? 'bg-[#EBF2F0] text-[#0D3B2E] border-[#0D3B2E]'
+                : 'text-gray-500 border-transparent hover:bg-gray-50'
+                }`}
+            >
+              {item.icon}
+              {item.name}
+            </Link>
+          ))}
+        </nav>
+
+        {/* User Profile */}
+        <div className="p-6 border-t border-gray-100 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" alt="Pak Budi" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-bold truncate">Pak Arif</p>
+            <p className="text-[10px] text-gray-500 uppercase tracking-wider truncate">UMKM Batik Karangmenjangan</p>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
-

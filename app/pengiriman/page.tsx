@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from 'react';
-import ActiveShipmentList, { ShipmentItem } from '@/components/ActiveShipmentList';
-import ShipmentTrackingMap from '@/components/ShipmentTrackingMap';
-import ShipmentLogs, { ShipmentLogItem } from '@/components/ShipmentLogs';
+import ActiveShipmentList, { ShipmentItem } from '@/app/pengiriman/ActiveShipmentList';
+import ShipmentTrackingMap from '@/app/pengiriman/ShipmentTrackingMap';
+import ShipmentLogs, { ShipmentLogItem } from '@/app/pengiriman/ShipmentLogs';
 
 const ACTIVE_SHIPMENTS: ShipmentItem[] = [
     { id: '#ORD-2023-9842', destination: 'Denpasar, Bali', courier: 'J&T EXPRESS', progress: 75, status: 'Sampai di Denpasar', color: 'bg-emerald-600' },
@@ -31,10 +31,10 @@ export default function Pengiriman() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Left Column: Active Shipments */}
-                <ActiveShipmentList 
-                    shipments={ACTIVE_SHIPMENTS} 
-                    selectedId={selectedOrder.id} 
-                    onSelect={setSelectedOrder} 
+                <ActiveShipmentList
+                    shipments={ACTIVE_SHIPMENTS}
+                    selectedId={selectedOrder.id}
+                    onSelect={setSelectedOrder}
                 />
 
                 {/* Right Column: Tracking Details */}

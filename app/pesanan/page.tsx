@@ -1,7 +1,7 @@
 import {
-    ShoppingCart,
-    RefreshCcw,
-    Inbox,
+    BookCheck,
+    PackageOpen,
+    ListChecks,
 } from 'lucide-react';
 
 import StatCard from '@/components/SummaryCard';
@@ -29,8 +29,8 @@ export default function Pesanan() {
                     subValue="Action Required"
                     subColor="text-red-500"
                     showProgress={false}
-                    icon={<Inbox className="text-[#0D3B2E]" size={16} />}
-                    iconBg="bg-[#D1E7E0]"
+                    icon={<ListChecks className="text-[#8B4513]" size={16} />}
+                    iconBg="bg-[#FDE7E7]"
                 />
                 <StatCard
                     title="Diproses Hari Ini"
@@ -38,7 +38,7 @@ export default function Pesanan() {
                     subValue="+5% vs yesterday"
                     subColor="text-emerald-500"
                     showProgress={false}
-                    icon={<RefreshCcw className="text-[#8B4513]" size={16} />}
+                    icon={<PackageOpen className="text-[#8B4513]" size={16} />}
                     iconBg="bg-[#FDE7E7]"
                 />
                 <StatCard
@@ -47,7 +47,7 @@ export default function Pesanan() {
                     subValue="Pesanan"
                     subColor="text-red-500"
                     showProgress={false}
-                    icon={<ShoppingCart className="text-[#0D3B2E]" size={16} />}
+                    icon={<BookCheck className="text-[#0D3B2E]" size={16} />}
                     iconBg="bg-[#D1E7E0]"
                 />
             </div>

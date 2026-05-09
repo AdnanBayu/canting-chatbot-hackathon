@@ -7,9 +7,9 @@ import {
 } from 'lucide-react';
 
 import StatCard from '@/components/SummaryCard';
-import RefundRequestCard from '@/components/RefundRequestCard';
-import WhatsAppLogItem from '@/components/WhatsAppLogItem';
-import type { WhatsAppTag } from '@/components/WhatsAppLogItem';
+import RefundRequestCard from '@/app/komplain/RefundRequestCard';
+import WhatsAppLogItem from '@/app/komplain/WhatsAppLogItem';
+import type { WhatsAppTag } from '@/app/komplain/WhatsAppLogItem';
 
 const REFUND_REQUESTS = [
     {
@@ -78,14 +78,14 @@ export default function Komplain() {
         <div className="flex flex-col">
             <header className="mb-8">
                 <h2 className="text-2xl font-bold text-[#0D3B2E]">Komplain</h2>
-                <p className="text-sm text-gray-500">Kelola ketidakpuasan pelanggan dan pengembalian barang dengan presisi.</p>
+                <p className="text-sm text-gray-500">Kelola ketidakpuasan pelanggan dan pengembalian barang dengan presisi</p>
             </header>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
                 <StatCard
-                    icon={<Clock size={16} className="text-emerald-600" />}
-                    iconBg="bg-emerald-50"
+                    icon={<Clock size={16} className="text-rose-600" />}
+                    iconBg="bg-rose-50"
                     title="Tertunda"
                     value="12"
                     subValue=""
@@ -93,19 +93,10 @@ export default function Komplain() {
                     showProgress={false}
                 />
                 <StatCard
-                    icon={<CheckCircle2 size={16} className="text-slate-600" />}
-                    iconBg="bg-slate-50"
+                    icon={<CheckCircle2 size={16} className="text-[#0D3B2E]" />}
+                    iconBg="bg-[#D1E7E0]"
                     title="Teratasi Hari Ini"
                     value="48"
-                    subValue=""
-                    subColor=""
-                    showProgress={false}
-                />
-                <StatCard
-                    icon={<TrendingDown size={16} className="text-rose-600" />}
-                    iconBg="bg-rose-50"
-                    title="Rerata Respon"
-                    value="1.4 jam"
                     subValue=""
                     subColor=""
                     showProgress={false}

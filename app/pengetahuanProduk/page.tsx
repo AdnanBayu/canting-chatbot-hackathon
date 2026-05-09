@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from 'react';
-import KnowledgeUpload from '@/components/KnowledgeUpload';
-import DocumentLibrary, { DocumentItem } from '@/components/DocumentLibrary';
+import KnowledgeUpload from '@/app/pengetahuanProduk/KnowledgeUpload';
+import DocumentLibrary, { DocumentItem } from '@/app/pengetahuanProduk/DocumentLibrary';
 
 const DOCUMENTS: DocumentItem[] = [
     { name: 'Soga_Dyeing_Manual_v2.pdf', size: '4.2 MB', category: 'Teknik Batik', date: '24 Jan 2024', status: 'Indexed' },

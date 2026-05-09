@@ -1,13 +1,13 @@
 "use client";
 
 import {
-    ShoppingCart,
-    Inbox,
-    RefreshCcw,
+    PackageSearch,
+    OctagonAlert,
+    CircleDollarSign
 } from 'lucide-react';
 
 import StatCard from '@/components/SummaryCard';
-import StokTable, { ProductItem } from '@/components/StokTable';
+import StokTable, { ProductItem } from '@/app/stokBarang/StokTable';
 
 const products: ProductItem[] = [
     {
@@ -93,7 +93,7 @@ export default function StokBarang() {
                     subValue="+12%"
                     subColor="text-emerald-500"
                     progress={45}
-                    icon={<Inbox className="text-[#0D3B2E]" size={16} />}
+                    icon={<PackageSearch className="text-[#0D3B2E]" size={16} />}
                     iconBg="bg-[#D1E7E0]"
                 />
                 <StatCard
@@ -102,7 +102,7 @@ export default function StokBarang() {
                     subValue="Requires Attention"
                     subColor="text-gray-400"
                     progress={82}
-                    icon={<RefreshCcw className="text-[#8B4513]" size={16} />}
+                    icon={<OctagonAlert className="text-[#8B4513]" size={16} />}
                     iconBg="bg-[#FDE7E7]"
                 />
                 <StatCard
@@ -112,7 +112,7 @@ export default function StokBarang() {
                     subColor="text-red-500"
                     showProgress={false}
                     caption="12 ready to ship"
-                    icon={<ShoppingCart className="text-[#0D3B2E]" size={16} />}
+                    icon={<CircleDollarSign className="text-[#0D3B2E]" size={16} />}
                     iconBg="bg-[#D1E7E0]"
                 />
             </div>

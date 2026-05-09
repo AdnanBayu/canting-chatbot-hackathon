@@ -1,18 +1,39 @@
+"use client";
 
 import {
-  ShoppingCart,
-  AlertTriangle,
-  Inbox,
-  RefreshCcw,
   LayoutDashboard,
   Package,
-  BookOpen
+  BookOpen,
+  Loader,
+  BanknoteArrowDown,
+  ShoppingCart,
 } from 'lucide-react';
+
+
 
 // Import our new components
 import StatCard from '@/components/SummaryCard';
 import PesananTable, { PesananItem } from '@/components/PesananTable';
-import StockItem from '@/components/StockKurang';
+import CustomerCareSummary from '@/components/CustomerCareSummary';
+import StockWarningSummary from '@/components/StockWarningSummary';
+
+const STOCK_WARNINGS = [
+  {
+    label: "Indigo Dye Powder",
+    warning: "Only 1.2kg left",
+    icon: <div className="bg-blue-50 p-2 rounded text-blue-500"><LayoutDashboard size={16} /></div>
+  },
+  {
+    label: "Primisima Cotton",
+    warning: "Only 2 rolls left",
+    icon: <div className="bg-purple-50 p-2 rounded text-purple-500"><Package size={16} /></div>
+  },
+  {
+    label: "Canting Tip #2",
+    warning: "Low stock: 5 units",
+    icon: <div className="bg-orange-50 p-2 rounded text-orange-500"><BookOpen size={16} /></div>
+  }
+];
 
 const RECENT_ORDERS: PesananItem[] = [
   { id: "#ORD-2041", name: "Siti Rahmawati", product: "Batik Solo Silk", status: "DIKIRIM", amount: "Rp 1.250.000" },
@@ -29,7 +50,7 @@ export default function Home() {
       </header>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Main Column */}
+        {/* Left Column */}
         <div className="xl:col-span-2 space-y-6">
 
           {/* Quick Summary */}
@@ -40,7 +61,7 @@ export default function Home() {
               subValue="+12%"
               subColor="text-emerald-500"
               progress={45}
-              icon={<Inbox className="text-[#0D3B2E]" size={16} />}
+              icon={<Loader className="text-[#0D3B2E]" size={16} />}
               iconBg="bg-[#D1E7E0]"
             />
             <StatCard
@@ -49,8 +70,8 @@ export default function Home() {
               subValue="82%"
               subColor="text-gray-400"
               progress={82}
-              icon={<RefreshCcw className="text-[#8B4513]" size={16} />}
-              iconBg="bg-[#FDE7E7]"
+              icon={<BanknoteArrowDown className="text-[#0D3B2E]" size={16} />}
+              iconBg="bg-[#D1E7E0]"
             />
             <StatCard
               title="PESANAN AKTIF"
@@ -111,57 +132,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Sidebar Column */}
+        {/* Right Column */}
         <div className="space-y-6">
           {/* Customer Care */}
-          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-            <h3 className="font-bold text-[#0D3B2E] mb-6">Customer Care</h3>
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-[#F8FAFB] p-4 rounded-lg">
-                <p className="text-[10px] text-gray-400 font-bold uppercase">Komplain</p>
-                <p className="text-2xl font-bold text-red-600">3</p>
-                <p className="text-[10px] text-gray-400">Menunggu penyelesaian</p>
-              </div>
-              <div className="bg-[#F8FAFB] p-4 rounded-lg">
-                <p className="text-[10px] text-gray-400 font-bold uppercase">Refunds</p>
-                <p className="text-2xl font-bold text-[#0D3B2E]">1</p>
-                <p className="text-[10px] text-gray-400">Minggu ini</p>
-              </div>
-            </div>
-            <button className="w-full py-3 border border-gray-200 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50">
-              Manage Tickets
-            </button>
-          </div>
+          <CustomerCareSummary
+            complaintsCount={3}
+            refundsCount={1}
+          />
 
           {/* Stock Warning */}
-          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="font-bold text-[#0D3B2E]">Peringatan Stok Kurang</h3>
-              <AlertTriangle className="text-red-500" size={18} />
-            </div>
-
-            <div className="space-y-6">
-              <StockItem
-                label="Indigo Dye Powder"
-                warning="Only 1.2kg left"
-                icon={<div className="bg-blue-50 p-2 rounded text-blue-500"><LayoutDashboard size={16} /></div>}
-              />
-              <StockItem
-                label="Primisima Cotton"
-                warning="Only 2 rolls left"
-                icon={<div className="bg-purple-50 p-2 rounded text-purple-500"><Package size={16} /></div>}
-              />
-              <StockItem
-                label="Canting Tip #2"
-                warning="Low stock: 5 units"
-                icon={<div className="bg-orange-50 p-2 rounded text-orange-500"><BookOpen size={16} /></div>}
-              />
-            </div>
-
-            <button className="w-full mt-8 py-3 bg-[#0F172A] text-white rounded-lg text-sm font-medium hover:bg-black transition-colors">
-              Inventory Report
-            </button>
-          </div>
+          <StockWarningSummary items={STOCK_WARNINGS} />
         </div>
       </div>
     </>

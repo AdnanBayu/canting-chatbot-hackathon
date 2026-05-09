@@ -19,7 +19,7 @@ export default function ReportTypeSelector({ options, selectedId, onSelect }: Re
         <section className="lg:col-span-5 bg-white rounded-xl border border-gray-200 p-6 shadow-sm h-fit">
             <div className="flex items-center space-x-3 mb-6">
                 <span className="w-6 h-6 rounded-full bg-[#064e3b] text-white flex items-center justify-center text-xs font-bold">1</span>
-                <h3 className="font-semibold text-lg">Tipe Data</h3>
+                <h3 className="font-semibold text-lg text-black">Tipe Data</h3>
             </div>
             <div className="space-y-3">
                 {options.map((opt) => (

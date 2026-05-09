@@ -8,10 +8,10 @@ export default function ReportDownloadOptions() {
         <section className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex-1">
             <div className="flex items-center space-x-3 mb-8">
                 <span className="w-6 h-6 rounded-full bg-[#064e3b] text-white flex items-center justify-center text-xs font-bold">3</span>
-                <h3 className="font-semibold text-lg">Buat Laporan</h3>
+                <h3 className="font-semibold text-lg text-black">Buat Laporan</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* PDF Option */}
                 <div className="border border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center text-center justify-between">
                     <div className="mb-4">

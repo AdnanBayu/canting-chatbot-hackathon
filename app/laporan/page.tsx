@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from 'react';
-import ReportTypeSelector, { ReportOption } from '@/components/ReportTypeSelector';
-import ReportDateRange from '@/components/ReportDateRange';
-import ReportDownloadOptions from '@/components/ReportDownloadOptions';
+import ReportTypeSelector, { ReportOption } from '@/app/laporan/ReportTypeSelector';
+import ReportDateRange from '@/app/laporan/ReportDateRange';
+import ReportDownloadOptions from '@/app/laporan/ReportDownloadOptions';
 
 const REPORT_OPTIONS: ReportOption[] = [
     { id: 'sales', title: 'Laporan Sales', desc: 'Pendapatan, produk, dan penjualan.' },
