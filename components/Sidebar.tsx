@@ -17,7 +17,7 @@ const menuItems = [
   { name: 'Stok Barang', icon: <Package size={20} />, href: '/stokBarang' },
   { name: 'Pesanan', icon: <ShoppingCart size={20} />, href: '/pesanan' },
   { name: 'Pengiriman', icon: <Truck size={20} />, href: '/pengiriman' },
-  { name: 'Pengetahuan Produk', icon: <BookOpen size={20} />, href: '/pengetahuan' },
+  { name: 'Pengetahuan Produk', icon: <BookOpen size={20} />, href: '/pengetahuanProduk' },
   { name: 'Laporan', icon: <BarChart3 size={20} />, href: '/laporan' },
   { name: 'Komplain', icon: <MessageSquare size={20} />, href: '/komplain' },
 ];
@@ -27,11 +27,14 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 bg-white border-r border-gray-100 flex flex-col hidden lg:flex h-screen sticky top-0 shrink-0">
+
+      {/* Title Bar */}
       <div className="p-6">
         <h1 className="text-xl font-bold text-[#0D3B2E] tracking-tight">CANTING</h1>
         <p className="text-xs text-gray-400 mt-1">Pengelolaan UMKM Batik Surabaya</p>
       </div>
 
+      {/* Menu Items */}
       <nav className="flex-1 mt-4">
         {menuItems.map((item) => (
           <Link
@@ -48,6 +51,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
+      {/* User Profile */}
       <div className="p-6 border-t border-gray-100 flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
           <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" alt="Pak Budi" />

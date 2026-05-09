@@ -1,12 +1,12 @@
 import React from 'react';
 
-interface StockKurangRingkasProps {
+interface StockKurangProps {
   label: string;
   warning: string;
   icon: React.ReactNode;
 }
 
-export default function StockKurangRingkas({ label, warning, icon }: StockKurangRingkasProps) {
+export default function StockKurang({ label, warning, icon }: StockKurangProps) {
   return (
     <div className="flex items-center gap-4">
       {icon}

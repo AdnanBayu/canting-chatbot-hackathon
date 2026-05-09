@@ -1,5 +1,4 @@
-"use client";
-import React from 'react';
+
 import {
   ShoppingCart,
   AlertTriangle,
@@ -11,9 +10,15 @@ import {
 } from 'lucide-react';
 
 // Import our new components
-import StatCard from '@/components/StatCard';
-import TableRow from '@/components/PesananTableRingkas';
-import StockItem from '@/components/StockKurangRingkas';
+import StatCard from '@/components/SummaryCard';
+import PesananTable, { PesananItem } from '@/components/PesananTable';
+import StockItem from '@/components/StockKurang';
+
+const RECENT_ORDERS: PesananItem[] = [
+  { id: "#ORD-2041", name: "Siti Rahmawati", product: "Batik Solo Silk", status: "DIKIRIM", amount: "Rp 1.250.000" },
+  { id: "#ORD-2040", name: "Ahmad Fauzi", product: "Parang Kencana Cotton", status: "PENDING", amount: "Rp 450.000" },
+  { id: "#ORD-2039", name: "Diana Putri", product: "Mega Mendung Scarf", status: "DIKIRIM", amount: "Rp 850.000" },
+];
 
 export default function Home() {
   return (
@@ -98,25 +103,10 @@ export default function Home() {
           <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-bold text-[#0D3B2E]">Pesanan Terbaru</h3>
-              <button className="text-xs font-bold text-[#0D3B2E] hover:underline">Lihat Semua</button>
+              <a href="/pesanan" className="text-xs font-bold text-[#0D3B2E] hover:underline">Lihat Semua</a>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="text-gray-400 text-[10px] uppercase tracking-wider border-b border-gray-50">
-                    <th className="pb-4 font-bold">ID Pesanan</th>
-                    <th className="pb-4 font-bold">Pelanggan</th>
-                    <th className="pb-4 font-bold">Produk</th>
-                    <th className="pb-4 font-bold">Status</th>
-                    <th className="pb-4 font-bold">Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  <TableRow id="#ORD-2041" name="Siti Rahmawati" product="Batik Solo Silk" status="DIKIRIM" amount="Rp 1.250.000" />
-                  <TableRow id="#ORD-2040" name="Ahmad Fauzi" product="Parang Kencana Cotton" status="TUNGGU" amount="Rp 450.000" />
-                  <TableRow id="#ORD-2039" name="Diana Putri" product="Mega Mendung Scarf" status="DIKIRIM" amount="Rp 850.000" />
-                </tbody>
-              </table>
+              <PesananTable data={RECENT_ORDERS} />
             </div>
           </div>
         </div>
