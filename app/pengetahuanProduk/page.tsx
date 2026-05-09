@@ -5,10 +5,10 @@ import KnowledgeUpload from '@/app/pengetahuanProduk/KnowledgeUpload';
 import DocumentLibrary, { DocumentItem } from '@/app/pengetahuanProduk/DocumentLibrary';
 
 const DOCUMENTS: DocumentItem[] = [
-    { name: 'Soga_Dyeing_Manual_v2.pdf', size: '4.2 MB', category: 'Teknik Batik', date: '24 Jan 2024', status: 'Indexed' },
-    { name: 'Parang_Sogan_Pattern_Specs.docx', size: '1.8 MB', category: 'Spesifikasi Pola', date: '22 Jan 2024', status: 'Indexed' },
-    { name: 'Sejarah_Batik_Surabaya.pdf', size: '12.5 MB', category: 'Filosofi & Sejarah', date: '15 Jan 2024', status: 'Processing' },
-    { name: 'Manual_Canting_Elektrik.pdf', size: '2.1 MB', category: 'Alat & Bahan', date: '10 Jan 2024', status: 'Indexed' },
+    { name: 'Soga_Dyeing_Manual_v2.pdf', size: '4.2 MB', date: '24 Jan 2024', status: 'Indexed' },
+    { name: 'Parang_Sogan_Pattern_Specs.docx', size: '1.8 MB', date: '22 Jan 2024', status: 'Indexed' },
+    { name: 'Sejarah_Batik_Surabaya.pdf', size: '12.5 MB', date: '15 Jan 2024', status: 'Processing' },
+    { name: 'Manual_Canting_Elektrik.pdf', size: '2.1 MB', date: '10 Jan 2024', status: 'Indexed' },
 ];
 
 export default function PengetahuanProduk() {

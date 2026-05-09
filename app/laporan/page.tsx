@@ -21,7 +21,7 @@ export default function Laporan() {
         <main className="flex flex-col">
             <header className="mb-8">
                 <h2 className="text-2xl font-bold text-[#0D3B2E]">Laporan</h2>
-                <p className="text-sm text-gray-500">Kelola dan undur data operasional bisnis anda untuk analisis eksternal.</p>
+                <p className="text-sm text-gray-500">Kelola dan undur data operasional bisnis anda untuk analisis eksternal</p>
             </header>
 
             {/* Report Builder Grid */}

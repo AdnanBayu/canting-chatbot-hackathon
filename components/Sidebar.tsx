@@ -15,6 +15,8 @@ import {
   X
 } from 'lucide-react';
 
+import SidebarProfile from './SidebarProfile';
+
 const menuItems = [
   { name: 'Ringkasan', icon: <LayoutDashboard size={20} />, href: '/' },
   { name: 'Stok Barang', icon: <Package size={20} />, href: '/stokBarang' },
@@ -82,15 +84,10 @@ export default function Sidebar() {
         </nav>
 
         {/* User Profile */}
-        <div className="p-6 border-t border-gray-100 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" alt="Pak Budi" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-bold truncate">Pak Arif</p>
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider truncate">UMKM Batik Karangmenjangan</p>
-          </div>
-        </div>
+        <SidebarProfile 
+          namaPemilik="Pak Arif" 
+          namaUMKM="UMKM Batik Karangmenjangan" 
+        />
       </aside>
     </>
   );

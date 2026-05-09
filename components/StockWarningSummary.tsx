@@ -34,7 +34,9 @@ export default function StockWarningSummary({ items }: StockWarningSummaryProps)
       </div>
 
       <Link href="/stokBarang" className="block mt-8">
-        <Button className="w-full bg-[#0F172A] hover:bg-black text-white py-3">
+        <Button
+          variant="danger"
+          className="w-full bg-[#0F172A] hover:bg-black text-white py-3">
           Inventory Report
         </Button>
       </Link>

@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 interface RefundRequestCardProps {
     orderId: string;
     time: string;
@@ -6,8 +8,6 @@ interface RefundRequestCardProps {
     item: string;
     description: string;
     imageColor: string;
-    onApprove?: () => void;
-    onReject?: () => void;
 }
 
 export default function RefundRequestCard({
@@ -18,8 +18,6 @@ export default function RefundRequestCard({
     item,
     description,
     imageColor,
-    onApprove,
-    onReject,
 }: RefundRequestCardProps) {
     return (
         <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm mb-4">
@@ -44,18 +42,18 @@ export default function RefundRequestCard({
                         &quot;{description}&quot;
                     </p>
                     <div className="flex gap-3">
-                        <button
-                            onClick={onApprove}
-                            className="flex-1 bg-[#064e3b] text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-[#065f46] transition-colors"
+                        <Button
+                            variant="primary"
+                            className="w-full font-bold text-slate-600 border-slate-200"
                         >
                             Approve Refund
-                        </button>
-                        <button
-                            onClick={onReject}
-                            className="flex-1 border border-slate-200 text-slate-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
+                        </Button>
+                        <Button
+                            variant="danger"
+                            className="w-full font-bold text-slate-600 border-slate-200"
                         >
                             Reject Request
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

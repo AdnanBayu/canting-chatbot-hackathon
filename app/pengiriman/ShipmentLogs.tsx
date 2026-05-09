@@ -1,6 +1,5 @@
 "use client";
 
-import React from 'react';
 import { BookOpen, Copy } from 'lucide-react';
 
 export interface ShipmentLogItem {

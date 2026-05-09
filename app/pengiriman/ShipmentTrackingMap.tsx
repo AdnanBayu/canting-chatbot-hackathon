@@ -1,9 +1,13 @@
 "use client";
 
-import React from 'react';
 import { Truck } from 'lucide-react';
+import { ShipmentItem } from './ActiveShipmentList';
 
-export default function ShipmentTrackingMap() {
+interface ShipmentTrackingMapProps {
+    selectedOrder: ShipmentItem;
+}
+
+export default function ShipmentTrackingMap({ selectedOrder }: ShipmentTrackingMapProps) {
     return (
         <div className="bg-[#E5E7EB] rounded-2xl h-[320px] relative overflow-hidden shadow-inner border border-gray-200">
             {/* Fake Map Grid Background */}
@@ -22,12 +26,12 @@ export default function ShipmentTrackingMap() {
 
             {/* Location Pins */}
             <div className="absolute left-[130px] top-[190px] flex flex-col items-center">
-                <div className="bg-white px-2 py-1 rounded text-[10px] font-bold shadow-sm mb-1">Dari: Solo</div>
+                <div className="bg-white px-2 py-1 rounded text-[10px] font-bold shadow-sm mb-1 uppercase tracking-tight">DARI: SOLO</div>
                 <div className="w-3 h-3 rounded-full bg-emerald-900 border-2 border-white shadow-md"></div>
             </div>
 
             <div className="absolute right-[120px] top-[140px] flex flex-col items-center">
-                <div className="bg-white px-2 py-1 rounded text-[10px] font-bold shadow-sm mb-1">Ke: Denpasar</div>
+                <div className="bg-white px-2 py-1 rounded text-[10px] font-bold shadow-sm mb-1 uppercase tracking-tight">KE: {selectedOrder.destination.split(',')[0]}</div>
                 <div className="w-3 h-3 rounded-full bg-emerald-400 border-2 border-white shadow-md"></div>
             </div>
 
@@ -35,7 +39,7 @@ export default function ShipmentTrackingMap() {
             <div className="absolute left-[450px] top-[125px] flex flex-col items-center">
                 <div className="bg-emerald-900 text-white px-3 py-1 rounded-md text-[10px] font-bold shadow-lg flex items-center space-x-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
-                    <span>Lokasi Sekarang</span>
+                    <span>KURIR DI PERJALANAN</span>
                 </div>
             </div>
 
@@ -47,12 +51,14 @@ export default function ShipmentTrackingMap() {
                     </div>
                     <div>
                         <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Perkiraan Sampai</p>
-                        <p className="text-sm font-bold text-slate-800">Jumat, 24 Nov 2023 (14:30)</p>
+                        <p className="text-sm font-bold text-slate-800">
+                            {selectedOrder.progress === 100 ? 'Sudah Sampai' : 'Jumat, 24 Nov 2023 (14:30)'}
+                        </p>
                     </div>
                 </div>
                 <div className="text-right">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Jarak Tersisa</p>
-                    <p className="text-sm font-extrabold text-slate-900">142 km</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kurir</p>
+                    <p className="text-sm font-extrabold text-slate-900">{selectedOrder.courier}</p>
                 </div>
             </div>
         </div>

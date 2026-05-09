@@ -29,7 +29,7 @@ export default function CustomerCareSummary({
       </div>
       <Link href="/komplain">
         <Button
-          variant="outline"
+          variant="primary"
           className="w-full font-bold text-slate-600 border-slate-200"
         >
           Manage Tickets

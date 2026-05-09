@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 export interface DocumentItem {
     name: string;
     size: string;
-    category: string;
     date: string;
     status: string;
 }
@@ -27,7 +26,6 @@ export default function DocumentLibrary({ documents }: DocumentLibraryProps) {
                     <thead>
                         <tr className="text-[11px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
                             <th className="px-6 py-4 font-bold">NAMA DOKUMEN</th>
-                            <th className="px-6 py-4 font-bold">KATEGORI</th>
                             <th className="px-6 py-4 font-bold">TANGGAL UNGGAH</th>
                             <th className="px-6 py-4 font-bold">STATUS</th>
                             <th className="px-6 py-4 text-center font-bold">AKSI</th>
@@ -44,11 +42,6 @@ export default function DocumentLibrary({ documents }: DocumentLibraryProps) {
                                             <p className="text-[10px] text-gray-400 uppercase">{doc.size}</p>
                                         </div>
                                     </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] font-bold tracking-tight">
-                                        {doc.category}
-                                    </span>
                                 </td>
                                 <td className="px-6 py-4 text-xs text-gray-500">{doc.date}</td>
                                 <td className="px-6 py-4">

@@ -12,15 +12,31 @@ const ACTIVE_SHIPMENTS: ShipmentItem[] = [
     { id: '#ORD-2023-9852', destination: 'Surabaya, Jatim', courier: 'JNE YES', progress: 25, status: 'Sedang diproses di DC Cakung', color: 'bg-blue-400' },
 ];
 
-const SHIPMENT_LOGS: ShipmentLogItem[] = [
-    { title: 'Tiba di DC Denpasar', description: 'Paket telah tiba di sorting center Denpasar, Bali.', time: '10:45', current: true },
-    { title: 'Berangkat dari DC Solo', description: 'Paket telah keluar main hub di Surakarta melalui jalur udara.', time: '04:12', current: false },
-    { title: 'Paket Diserahkan', description: 'Toko telah menyerahkan paket ke kurir J&T.', time: 'Kemarin', current: false },
-    { title: 'Label Pengiriman Telah Dibuat', description: 'Nomor tracker untuk pesanan adalah #ORD-2023-9842.', time: 'Kemarin', current: false },
-];
+const SHIPMENT_LOGS_DATA: Record<string, ShipmentLogItem[]> = {
+    '#ORD-2023-9842': [
+        { title: 'Tiba di DC Denpasar', description: 'Paket telah tiba di sorting center Denpasar, Bali.', time: '10:45', current: true },
+        { title: 'Berangkat dari DC Solo', description: 'Paket telah keluar main hub di Surakarta melalui jalur udara.', time: '04:12', current: false },
+        { title: 'Paket Diserahkan', description: 'Toko telah menyerahkan paket ke kurir J&T.', time: 'Kemarin', current: false },
+        { title: 'Label Pengiriman Telah Dibuat', description: 'Nomor tracker untuk pesanan adalah #ORD-2023-9842.', time: 'Kemarin', current: false },
+    ],
+    '#ORD-2023-9845': [
+        { title: 'Kurir Menuju Lokasi', description: 'Kurir JNE sedang menuju lokasi penjemputan paket.', time: '14:20', current: true },
+        { title: 'Label Dibuat', description: 'Proses administrasi pengiriman telah selesai.', time: '12:00', current: false },
+    ],
+    '#ORD-2023-9850': [
+        { title: 'Paket Diterima', description: 'Paket telah diterima oleh Ibu Sarah di Jakarta Pusat.', time: 'Tadi Pagi', current: true },
+        { title: 'Menuju Alamat Tujuan', description: 'Kurir dalam perjalanan ke alamat penerima.', time: '08:00', current: false },
+    ],
+    '#ORD-2023-9852': [
+        { title: 'Sorting di DC Cakung', description: 'Paket sedang diproses di fasilitas logistik Cakung.', time: 'Baru Saja', current: true },
+        { title: 'Penjemputan Berhasil', description: 'Paket telah diambil dari toko.', time: 'Kemarin', current: false },
+    ],
+};
 
 export default function Pengiriman() {
     const [selectedOrder, setSelectedOrder] = useState<ShipmentItem>(ACTIVE_SHIPMENTS[0]);
+
+    const currentLogs = SHIPMENT_LOGS_DATA[selectedOrder.id] || [];
 
     return (
         <div className="flex flex-col">
@@ -39,8 +55,8 @@ export default function Pengiriman() {
 
                 {/* Right Column: Tracking Details */}
                 <div className="lg:col-span-8 space-y-6">
-                    <ShipmentTrackingMap />
-                    <ShipmentLogs logs={SHIPMENT_LOGS} />
+                    <ShipmentTrackingMap selectedOrder={selectedOrder} />
+                    <ShipmentLogs logs={currentLogs} />
                 </div>
             </div>
         </div>
