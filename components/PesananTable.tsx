@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 const statusStyles = {
   DIKIRIM: 'bg-[#D1E7E0] text-black',
   DIPROSES: 'bg-orange-200 text-black',
-  PENDING: 'bg-yellow-200 text-black',
+  TUNDA: 'bg-yellow-200 text-black',
   DITOLAK: 'bg-red-200 text-black',
 }
 

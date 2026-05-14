@@ -8,14 +8,13 @@ import {
   BanknoteArrowDown,
   ShoppingCart,
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-
-
-// Import our new components
 import StatCard from '@/components/SummaryCard';
 import PesananTable, { PesananItem } from '@/components/PesananTable';
 import CustomerCareSummary from '@/components/CustomerCareSummary';
 import StockWarningSummary from '@/components/StockWarningSummary';
+import { authenticatedFetch } from '@/lib/api';
 
 const STOCK_WARNINGS = [
   {
@@ -35,13 +34,57 @@ const STOCK_WARNINGS = [
   }
 ];
 
-const RECENT_ORDERS: PesananItem[] = [
-  { id: "#ORD-2041", name: "Siti Rahmawati", product: "Batik Solo Silk", status: "DIKIRIM", amount: "Rp 1.250.000" },
-  { id: "#ORD-2040", name: "Ahmad Fauzi", product: "Parang Kencana Cotton", status: "PENDING", amount: "Rp 450.000" },
-  { id: "#ORD-2039", name: "Diana Putri", product: "Mega Mendung Scarf", status: "DIKIRIM", amount: "Rp 850.000" },
-];
-
 export default function Home() {
+  const [recentOrders, setRecentOrders] = useState<PesananItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await authenticatedFetch('/dashboard/orders/recent');
+
+        if (response.ok) {
+          const result = await response.json();
+          const rawOrders = Array.isArray(result) ? result : (result.data || []);
+
+          const mappedOrders: PesananItem[] = rawOrders.map((item: any) => {
+            let uiStatus: any = 'TUNDA';
+            const apiStatus = item.status?.toUpperCase() || '';
+
+            if (apiStatus.includes('SENT') || apiStatus.includes('COMPLETED') || apiStatus.includes('DELIVERED')) {
+              uiStatus = 'DIKIRIM';
+            } else if (apiStatus.includes('PROCESS') || apiStatus.includes('PAID')) {
+              uiStatus = 'DIPROSES';
+            } else if (apiStatus.includes('CANCEL') || apiStatus.includes('FAIL') || apiStatus.includes('REJECT') || apiStatus.includes('DITOLAK')) {
+              uiStatus = 'DITOLAK';
+            }
+
+            return {
+              id: item.id,
+              name: item.customer,
+              product: item.product,
+              status: uiStatus,
+              amount: new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 0
+              }).format(item.total || 0)
+            };
+          });
+
+          setRecentOrders(mappedOrders);
+        }
+      } catch (error) {
+
+        console.error('Error fetching orders:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   return (
     <>
       <header className="mb-8">
@@ -127,8 +170,16 @@ export default function Home() {
               <a href="/pesanan" className="text-xs font-bold text-[#0D3B2E] hover:underline">Lihat Semua</a>
             </div>
             <div className="overflow-x-auto">
-              <PesananTable data={RECENT_ORDERS} />
+              {isLoading ? (
+                <div className="flex justify-center items-center py-10">
+                  <Loader className="animate-spin text-[#0D3B2E]" size={24} />
+                  <span className="ml-2 text-gray-500">Loading orders...</span>
+                </div>
+              ) : (
+                <PesananTable data={recentOrders} />
+              )}
             </div>
+
           </div>
         </div>
 

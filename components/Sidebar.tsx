@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -45,7 +45,7 @@ export default function Sidebar() {
 
       {/* Backdrop for mobile */}
       {isOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm transition-opacity"
           onClick={toggleSidebar}
         />
@@ -84,9 +84,9 @@ export default function Sidebar() {
         </nav>
 
         {/* User Profile */}
-        <SidebarProfile 
-          namaPemilik="Pak Arif" 
-          namaUMKM="UMKM Batik Karangmenjangan" 
+        <SidebarProfile
+          namaPemilik="Pak Arif"
+          namaUMKM="UMKM Batik Karangmenjangan"
         />
       </aside>
     </>

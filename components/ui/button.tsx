@@ -1,8 +1,8 @@
 import * as React from "react"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'outline' | 'danger'; // Optional: choose a look
-  size?: 'sm' | 'md' | 'lg';                 // Optional: choose a size
+  variant?: 'primary' | 'outline' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export function Button({

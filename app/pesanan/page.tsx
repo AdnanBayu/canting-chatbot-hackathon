@@ -1,3 +1,5 @@
+"use client";
+
 import {
     BookCheck,
     PackageOpen,
@@ -6,15 +8,67 @@ import {
 
 import StatCard from '@/components/SummaryCard';
 import PesananTable, { PesananItem } from '@/components/PesananTable';
+import { useState, useEffect } from 'react';
+import { Loader } from 'lucide-react';
+import { authenticatedFetch } from '@/lib/api';
 
-const ORDERS_DATA: PesananItem[] = [
-    { id: "#ORD-2041", name: "Siti Rahmawati", product: "Batik Solo Silk", status: "DIKIRIM", amount: "Rp 1.250.000" },
-    { id: "#ORD-2040", name: "Ahmad Fauzi", product: "Parang Kencana Cotton", status: "PENDING", amount: "Rp 450.000" },
-    { id: "#ORD-2039", name: "Diana Putri", product: "Mega Mendung Scarf", status: "DIKIRIM", amount: "Rp 850.000" },
-];
 
 export default function Pesanan() {
+    const [orders, setOrders] = useState<PesananItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await authenticatedFetch('/dashboard/orders');
+                if (response.ok) {
+                    const result = await response.json();
+                    const rawOrders = result.items || [];
+
+                    const mappedOrders: PesananItem[] = rawOrders.map((item: any) => {
+                        let uiStatus: any = 'TUNDA';
+                        const apiStatus = item.status?.toUpperCase() || '';
+
+                        if (apiStatus.includes('SENT') || apiStatus.includes('COMPLETED') || apiStatus.includes('DELIVERED')) {
+                            uiStatus = 'DIKIRIM';
+                        } else if (apiStatus.includes('PROCESS') || apiStatus.includes('PAID')) {
+                            uiStatus = 'DIPROSES';
+                        } else if (apiStatus.includes('CANCEL') || apiStatus.includes('FAIL') || apiStatus.includes('REJECT')) {
+                            uiStatus = 'DITOLAK';
+                        }
+
+                        // Summarize products (e.g. "2 Produk")
+                        const productCount = item.items?.length || 0;
+                        const productSummary = productCount > 0 ? `${productCount} Produk` : 'Tanpa Produk';
+
+                        return {
+                            id: item.id,
+                            name: item.buyer_phone,
+                            product: productSummary,
+                            status: uiStatus,
+                            amount: new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                maximumFractionDigits: 0
+                            }).format(item.total_amount || 0)
+                        };
+                    });
+
+                    setOrders(mappedOrders);
+                }
+            } catch (error) {
+
+                console.error('Error fetching orders:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchOrders();
+    }, []);
+
     return (
+
         <>
             <header className="mb-8">
                 <h2 className="text-2xl font-bold text-[#0D3B2E]">Pesanan Masuk</h2>
@@ -53,7 +107,15 @@ export default function Pesanan() {
             </div>
 
             {/* Orders Table Area */}
-            <PesananTable data={ORDERS_DATA} showAction={true} showHead={true} showPage={true} />
+            {isLoading ? (
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 flex flex-col items-center justify-center">
+                    <Loader className="animate-spin text-[#0D3B2E] mb-4" size={32} />
+                    <p className="text-gray-500 font-medium">Memuat data pesanan...</p>
+                </div>
+            ) : (
+                <PesananTable data={orders} showAction={true} showHead={true} showPage={true} />
+            )}
         </>
+
     )
 }

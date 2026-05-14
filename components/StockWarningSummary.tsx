@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { AlertTriangle, LayoutDashboard, Package, BookOpen } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import StockKurang from './StockKurang';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';

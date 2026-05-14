@@ -15,8 +15,6 @@ interface SummaryCardProps {
 export default function SummaryCard({
   title,
   value,
-  subValue,
-  subColor,
   progress,
   showProgress = true,
   caption,

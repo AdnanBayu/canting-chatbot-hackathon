@@ -116,8 +116,8 @@ export default function Komplain() {
                 {/* Active Refund Requests */}
                 <div className="xl:col-span-2">
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-bold text-slate-800">Active Refund Requests</h3>
-                        <button className="text-emerald-700 text-xs font-bold hover:underline">View All</button>
+                        <h3 className="font-bold text-slate-800">Komplain Aktif</h3>
+                        {/* <button className="text-emerald-700 text-xs font-bold hover:underline">Lihat Semua</button> */}
                     </div>
 
                     {REFUND_REQUESTS.map((req) => (
@@ -128,7 +128,7 @@ export default function Komplain() {
                 {/* WhatsApp Log */}
                 <div className="xl:col-span-1">
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-bold text-slate-800">WhatsApp Log</h3>
+                        <h3 className="font-bold text-slate-800">Histori WhatsApp</h3>
                         <MessageSquare className="text-slate-400" size={18} />
                     </div>
 
@@ -138,10 +138,10 @@ export default function Komplain() {
                                 <WhatsAppLogItem key={i} {...log} />
                             ))}
                         </div>
-                        <button className="w-full py-4 border-t border-dashed border-slate-200 text-slate-400 text-xs font-medium flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
+                        {/* <button className="w-full py-4 border-t border-dashed border-slate-200 text-slate-400 text-xs font-medium flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
                             <History size={14} />
                             Tampilkan Pesan Lebih Lama
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
