@@ -14,6 +14,7 @@ import StatCard from '@/components/SummaryCard';
 import PesananTable, { PesananItem } from '@/components/PesananTable';
 import CustomerCareSummary, { CustomerCareAPI } from '@/components/CustomerCareSummary';
 import StockWarningSummary, { InventoryAlert } from '@/components/StockWarningSummary';
+import SalesChart from '@/components/SalesChart';
 
 interface DashboardSummary {
   metrics: {
@@ -156,40 +157,8 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Sales Chart Placeholder */}
-          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="font-bold text-[#0D3B2E]">Tren Penjualan</h3>
-              <div className="flex items-center gap-4 text-xs font-medium text-gray-400">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#0D3B2E]"></div> Pendapatan
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#D1E7E0]"></div> Target
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-end justify-between h-48 gap-2">
-              {[
-                { day: 'Senin', h: '70%', t: '85%' },
-                { day: 'Selasa', h: '85%', t: '95%' },
-                { day: 'Rabu', h: '95%', t: '100%' },
-                { day: 'Kamis', h: '75%', t: '88%' },
-                { day: 'Jumat', h: '90%', t: '95%' },
-                { day: 'Sabtu', h: '100%', t: '100%' },
-                { day: 'Minggu', h: '60%', t: '90%' },
-              ].map((item) => (
-                <div key={item.day} className="flex-1 flex flex-col items-center gap-2 group">
-                  <div className="w-full relative h-full flex flex-col justify-end bg-gray-50 rounded-t-md overflow-hidden">
-                    <div style={{ height: item.t }} className="absolute bottom-0 w-full bg-[#D1E7E0] opacity-50"></div>
-                    <div style={{ height: item.h }} className="absolute bottom-0 w-full bg-[#0D3B2E] transition-all group-hover:bg-[#155a47]"></div>
-                  </div>
-                  <span className="text-[10px] text-gray-400 uppercase font-bold">{item.day}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Sales Chart */}
+          <SalesChart />
 
           {/* Recent Orders */}
           <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">

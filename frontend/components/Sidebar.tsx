@@ -86,7 +86,7 @@ export default function Sidebar() {
         {/* User Profile */}
         <SidebarProfile
           namaPemilik="Pak Arif"
-          namaUMKM="UMKM Batik Karangmenjangan"
+          namaUMKM="Batik Sukolilo"
         />
       </aside>
     </>

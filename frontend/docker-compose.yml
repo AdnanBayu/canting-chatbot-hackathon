@@ -1,0 +1,31 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=https://api-stg.canting.my.id
+        - NEXT_PUBLIC_AUTH_PHONE_NUMBER=${NEXT_PUBLIC_AUTH_PHONE_NUMBER}
+        - NEXT_PUBLIC_AUTH_USERNAME=${NEXT_PUBLIC_AUTH_USERNAME}
+        - NEXT_PUBLIC_AUTH_PASSWORD=${NEXT_PUBLIC_AUTH_PASSWORD}
+        - NEXT_PUBLIC_AUTH_NAME=${NEXT_PUBLIC_AUTH_NAME}
+    container_name: canting-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=https://api-stg.canting.my.id
+      - NEXT_PUBLIC_AUTH_PHONE_NUMBER=${NEXT_PUBLIC_AUTH_PHONE_NUMBER}
+      - NEXT_PUBLIC_AUTH_USERNAME=${NEXT_PUBLIC_AUTH_USERNAME}
+      - NEXT_PUBLIC_AUTH_PASSWORD=${NEXT_PUBLIC_AUTH_PASSWORD}
+      - NEXT_PUBLIC_AUTH_NAME=${NEXT_PUBLIC_AUTH_NAME}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_ENABLE_MAPS=true
+      - NEXT_PUBLIC_ENABLE_EXPORT=true
+    restart: always
+
+# Optional: Add a networks section if you plan to add more services like a local DB
+# networks:
+#   canting-network:
+#     driver: bridge

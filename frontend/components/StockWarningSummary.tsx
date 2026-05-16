@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { AlertTriangle, Package } from 'lucide-react';
-import StockKurang from './StockKurang';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+
 
 export interface InventoryAlert {
   item_name: string;
@@ -15,6 +15,24 @@ export interface InventoryAlert {
 
 interface StockWarningTableProps {
   items: InventoryAlert[];
+}
+
+interface StockKurangProps {
+  label: string;
+  warning: string;
+  icon: React.ReactNode;
+}
+
+function StockKurang({ label, warning, icon }: StockKurangProps) {
+  return (
+    <div className="flex items-center gap-4">
+      {icon}
+      <div>
+        <p className="text-sm font-bold text-[#0D3B2E]">{label}</p>
+        <p className="text-[10px] text-red-500 font-medium">{warning}</p>
+      </div>
+    </div>
+  );
 }
 
 export default function StockWarningSummary({ items }: StockWarningTableProps) {

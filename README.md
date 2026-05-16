@@ -1,4 +1,4 @@
-# 🪡 CANTING
+# CANTING
 ### *Catat Penting — WhatsApp Agentic AI for Batik SMEs*
 [![Hackathon](https://img.shields.io/badge/Hackathon-Antigravity%202026-4f46e5?style=for-the-badge)](https://gdg.community.dev/gdg-surabaya/)
 [![Organizer](https://img.shields.io/badge/Organizer-GDG%20Surabaya-4285F4?style=for-the-badge&logo=google)](https://gdg.community.dev/gdg-surabaya/)
@@ -8,10 +8,9 @@
 [![WhatsApp](https://img.shields.io/badge/Channel-WhatsApp-25D366?style=for-the-badge&logo=whatsapp)](https://www.whatsapp.com/)
 
 **Reducing operational drag for 385,054 Batik SMEs in Surabaya — one message at a time.**
+[🚀 Live Demo](#) · [📖 Docs](#) · [🐛 Report Bug](#) · [💡 Request Feature](#)
 
 ![CANTING Logo](public/logo.png)
-
-[🚀 Live Demo](#) · [📖 Docs](#) · [🐛 Report Bug](#) · [💡 Request Feature](#)
 
 </div>
 
@@ -91,7 +90,7 @@ CANTING implements a **Human-in-the-Loop (HITL)** methodology for high-stakes de
 **Core Methodology:**
 - ✅ **Human-in-the-Loop** — Critical decisions (refunds, stock corrections) require seller confirmation
 - ✅ **Zero-Downtime Knowledge Update** — Upload new product docs via dashboard; RAG refreshes live
-- ✅ **Multimodal Input** — Text, voice notes, and images all processed natively over WhatsApp
+- ✅ **Multimodal Input** — Text and images all processed natively over WhatsApp
 
 ---
 
@@ -101,7 +100,7 @@ CANTING implements a **Human-in-the-Loop (HITL)** methodology for high-stakes de
 
 | Feature | Description |
 |---------|-------------|
-| 🎙️ **Manajer Gudang Suara** | Update stock levels via WhatsApp voice note or text — no app switching needed |
+| 🎙️ **Manajer Gudang Suara** | Update stock levels via WhatsApp text message — no app switching needed |
 | 💰 **Kasir Verifikator Cerdas** | Automatic payment notifications and AI-powered transfer receipt photo verification |
 | 📈 **Analis Bisnis Otonom** | On-demand generation of dynamic web dashboards with sales, revenue, and inventory insights |
 
@@ -305,7 +304,7 @@ For production deployment, set these variables directly in your hosting platform
 CANTING directly embodies the **Antigravity 2026** theme of **Efficiency & Speed**:
 
 ### ⚡ Speed
-- Stock updates that previously took 10+ minutes of manual entry now take **one voice message**
+- Stock updates that previously took 10+ minutes of manual entry now take **one message**
 - Payment verification drops from minutes of manual checking to **under 10 seconds** with AI photo analysis
 - Buyers get instant batik cultural education — no waiting for the seller to explain each motif
 
@@ -330,7 +329,7 @@ Built with ❤️ for Batik UMKM Surabaya at **Antigravity 2026** by GDG Surabay
 
 | Name | Role |
 |------|------|
-| **M. Adnan Bayu Firdaus** | UI/UX Design & Frontend Development |
+| **M. Adnan Bayu Firdaus** | Frontend & Product Development |
 | **M. Wisnu Maulana** | Backend Engineering & AI Integration |
 
 ---
