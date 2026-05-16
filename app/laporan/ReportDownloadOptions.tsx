@@ -1,9 +1,14 @@
 "use client";
 
 import React from 'react';
-import { FileText, FileSpreadsheet } from 'lucide-react';
+import { FileText, FileSpreadsheet, Loader2 } from 'lucide-react';
 
-export default function ReportDownloadOptions() {
+interface ReportDownloadOptionsProps {
+    onDownload: (format: 'pdf' | 'excel') => void;
+    isGenerating: boolean;
+}
+
+export default function ReportDownloadOptions({ onDownload, isGenerating }: ReportDownloadOptionsProps) {
     return (
         <section className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex-1">
             <div className="flex items-center space-x-3 mb-8">
@@ -21,8 +26,13 @@ export default function ReportDownloadOptions() {
                         <h4 className="font-bold text-slate-900">Laporan PDF</h4>
                         <p className="text-xs text-gray-500 mt-1">Laporan visual untuk dicetak atau presentasi.</p>
                     </div>
-                    <button className="w-full bg-[#064e3b] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-[#053d2e] transition-colors uppercase tracking-wide">
-                        Download PDF
+                    <button 
+                        onClick={() => onDownload('pdf')}
+                        disabled={isGenerating}
+                        className="w-full bg-[#064e3b] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-[#053d2e] transition-colors uppercase tracking-wide flex items-center justify-center"
+                    >
+                        {isGenerating ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
+                        {isGenerating ? 'Generating...' : 'Download PDF'}
                     </button>
                 </div>
 
@@ -35,8 +45,13 @@ export default function ReportDownloadOptions() {
                         <h4 className="font-bold text-slate-900">Laporan Excel</h4>
                         <p className="text-xs text-gray-500 mt-1">Data mentah untuk analisis.</p>
                     </div>
-                    <button className="w-full border border-[#064e3b] text-[#064e3b] py-2.5 rounded-lg text-sm font-semibold hover:bg-emerald-50 transition-colors uppercase tracking-wide">
-                        Download XLSX
+                    <button 
+                        onClick={() => onDownload('excel')}
+                        disabled={isGenerating}
+                        className="w-full border border-[#064e3b] text-[#064e3b] py-2.5 rounded-lg text-sm font-semibold hover:bg-emerald-50 transition-colors uppercase tracking-wide flex items-center justify-center"
+                    >
+                        {isGenerating ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
+                        {isGenerating ? 'Generating...' : 'Download XLSX'}
                     </button>
                 </div>
             </div>

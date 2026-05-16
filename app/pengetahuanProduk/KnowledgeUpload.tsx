@@ -3,12 +3,14 @@
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, X, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { authenticatedFetch } from '@/lib/api';
 
 interface LocalFile {
     id: string;
     name: string;
     size: string;
-    status: 'idle' | 'uploading' | 'success';
+    status: 'idle' | 'uploading' | 'success' | 'error';
+    file: File;
 }
 
 export default function KnowledgeUpload() {
@@ -20,24 +22,43 @@ export default function KnowledgeUpload() {
             const newFiles = Array.from(e.target.files).map(file => ({
                 id: Math.random().toString(36).substr(2, 9),
                 name: file.name,
-                size: (file.size / (1024 * 1024)).toFixed(1) + ' MB',
-                status: 'idle' as const
+                size: (file.size / 1024).toFixed(1) + ' KB',
+                status: 'idle' as const,
+                file: file
             }));
             setFiles(prev => [...prev, ...newFiles]);
         }
     };
 
-    const removeFile = (id: string) => {
-        setFiles(prev => prev.filter(f => f.id !== id));
+    const uploadFiles = async () => {
+        const idleFiles = files.filter(f => f.status === 'idle');
+
+        for (const fileItem of idleFiles) {
+            setFiles(prev => prev.map(f => f.id === fileItem.id ? { ...f, status: 'uploading' } : f));
+
+            try {
+                const formData = new FormData();
+                formData.append('file', fileItem.file);
+
+                const response = await authenticatedFetch('/knowledge/documents', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    setFiles(prev => prev.map(f => f.id === fileItem.id ? { ...f, status: 'success' } : f));
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (error) {
+                console.error(`Error uploading ${fileItem.name}:`, error);
+                setFiles(prev => prev.map(f => f.id === fileItem.id ? { ...f, status: 'error' } : f));
+            }
+        }
     };
 
-    const simulateUpload = () => {
-        setFiles(prev => prev.map(f => ({ ...f, status: 'uploading' })));
-
-        // Mocking backend processing delay
-        setTimeout(() => {
-            setFiles(prev => prev.map(f => ({ ...f, status: 'success' })));
-        }, 2000);
+    const removeFile = (id: string) => {
+        setFiles(prev => prev.filter(f => f.id !== id));
     };
 
     const triggerFileInput = () => {
@@ -103,6 +124,7 @@ export default function KnowledgeUpload() {
                                 <div className="flex items-center space-x-2">
                                     {file.status === 'uploading' && <Loader2 className="animate-spin text-emerald-600" size={16} />}
                                     {file.status === 'success' && <CheckCircle2 className="text-emerald-500" size={16} />}
+                                    {file.status === 'error' && <X className="text-rose-500" size={16} />}
                                     <button
                                         onClick={() => removeFile(file.id)}
                                         className="p-1 hover:bg-rose-50 hover:text-rose-500 rounded-md transition-colors text-gray-300"
@@ -116,7 +138,7 @@ export default function KnowledgeUpload() {
 
                     <Button
                         size='md'
-                        onClick={simulateUpload}
+                        onClick={uploadFiles}
                         disabled={files.every(f => f.status === 'success') || files.some(f => f.status === 'uploading')}
                         className="w-full mt-6 py-6 bg-[#0D3B2E] hover:bg-[#155a47] text-white font-bold text-sm shadow-xl shadow-emerald-900/10"
                     >

@@ -6,49 +6,70 @@ import {
     CircleDollarSign
 } from 'lucide-react';
 
+import { authenticatedFetch } from '@/lib/api';
+import { useEffect, useState } from 'react';
+
+import Header from '@/components/Header';
 import StatCard from '@/components/SummaryCard';
 import StokTable, { ProductItem } from '@/app/stokBarang/StokTable';
-import { authenticatedFetch } from '@/lib/api';
-import { useEffect, useState, useMemo } from 'react';
+
+interface InventorySummary {
+    total_sku: {
+        count: number;
+        trend_percentage: number;
+    };
+    low_stock_items: number;
+    estimated_warehouse_value: number;
+}
 
 export default function StokBarang() {
-    const [products, setProducts] = useState<ProductItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
+
+    const [products, setProducts] = useState<ProductItem[]>([]);
+    const [summary, setSummary] = useState<InventorySummary | null>(null);
 
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await authenticatedFetch('/dashboard/products');
-            const result = await response.json();
-            
-            if (result && result.items) {
-                const mappedProducts: ProductItem[] = result.items.map((item: any, index: number) => {
-                    // Sum up all variants to get total stock
-                    const totalStock = Object.values(item.stock_variants || {}).reduce((acc: number, qty: any) => acc + (Number(qty) || 0), 0);
-                    
-                    // Simple logic for status display
-                    let displayStatus = 'Normal';
-                    let color = 'bg-slate-500';
-                    let percentage = Math.min(100, Math.max(0, totalStock)); // Simplified percentage
 
-                    if (totalStock < 15) {
-                        displayStatus = 'Low Stock';
+            // fetch stock data from api
+            const [productsRes, summaryRes] = await Promise.all([
+                authenticatedFetch('/inventory/products'),
+                authenticatedFetch('/inventory/summary')
+            ]);
+
+            // process product data
+            if (productsRes.ok) {
+                const result = await productsRes.json();
+                const rawProducts = Array.isArray(result) ? result : (result.items || result.data || []);
+
+                const mappedProducts: ProductItem[] = rawProducts.map((item: any, index: number) => {
+                    // Robustly extract stock data
+                    const quantity = Number(item.stock?.quantity ?? item.quantity ?? 0);
+                    const status = item.stock?.status || item.status || 'NORMAL';
+                    const unit = item.stock?.unit || item.unit || 'Units';
+
+                    // Status display logic
+                    let color = 'bg-slate-500';
+                    let percentage = Math.min(100, Math.max(0, quantity));
+
+                    if (status === 'LOW') {
                         color = 'bg-red-500';
-                        percentage = Math.max(15, totalStock); // Ensure some bar visibility
-                    } else if (totalStock > 50) {
-                        displayStatus = 'Optimal';
+                        percentage = Math.max(15, quantity);
+                    } else if (status === 'NORMAL') {
                         color = 'bg-emerald-600';
                     }
 
                     return {
-                        id: index + 1,
-                        name: item.name,
-                        subtitle: item.category,
-                        sku: item.sku,
-                        category: item.category,
-                        stock: totalStock,
-                        unit: 'Units',
-                        status: displayStatus,
+                        id: item.id || index + 1,
+                        name: item.name || item.product_name || "Produk Tanpa Nama",
+                        subtitle: typeof item.category === 'object' ? item.category?.name : (item.category || "General"),
+                        sku: item.sku || "NO-SKU",
+                        category: typeof item.category === 'object' ? item.category?.name : (item.category || "General"),
+                        stock: quantity,
+                        status: status === 'LOW' ? 'Low Stock' : 'Optimal',
+                        unit: unit,
                         price: new Intl.NumberFormat('id-ID', {
                             style: 'currency',
                             currency: 'IDR',
@@ -60,6 +81,11 @@ export default function StokBarang() {
                 });
                 setProducts(mappedProducts);
             }
+
+            if (summaryRes.ok) {
+                const summaryData = await summaryRes.json();
+                setSummary(summaryData);
+            }
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
@@ -68,66 +94,69 @@ export default function StokBarang() {
     };
 
     useEffect(() => {
+        setMounted(true);
         fetchProducts();
     }, []);
 
-    const stats = useMemo(() => {
-        const totalSku = products.length;
-        const lowStockCount = products.filter(p => p.status === 'Low Stock').length;
-        const totalValue = products.reduce((acc, p) => {
-            const numericPrice = parseInt(p.price.replace(/[^0-9]/g, '')) || 0;
-            return acc + (numericPrice * p.stock);
-        }, 0);
-
-        return {
-            totalSku,
-            lowStockCount,
-            totalValue: new Intl.NumberFormat('id-ID', {
+    // STAT_CONFIG defined inside to access state
+    const STAT_CONFIG = [
+        {
+            key: 'total_sku',
+            title: "TOTAL SKU",
+            value: (summary?.total_sku?.count ?? 0).toLocaleString(),
+            subValue: "Total barang",
+            subColor: "text-emerald-500",
+            icon: <PackageSearch className="text-[#0D3B2E]" size={16} />,
+            iconBg: "bg-[#D1E7E0]"
+        },
+        {
+            key: 'low_stock_items',
+            title: "STOK BARANG RENDAH",
+            value: (summary?.low_stock_items ?? 0).toString(),
+            subValue: "Butuh perhatian",
+            subColor: (summary?.low_stock_items ?? 0) > 0 ? "text-red-500" : "text-gray-400",
+            icon: <OctagonAlert className={(summary?.low_stock_items ?? 0) > 0 ? "text-red-600" : "text-[#8B4513]"} size={16} />,
+            iconBg: (summary?.low_stock_items ?? 0) > 0 ? "bg-red-50" : "bg-[#FDE7E7]"
+        },
+        {
+            key: 'estimated_warehouse_value',
+            title: "ESTIMASI NILAI GUDANG",
+            value: new Intl.NumberFormat('id-ID', {
                 style: 'currency',
                 currency: 'IDR',
                 notation: 'compact',
                 maximumFractionDigits: 1
-            }).format(totalValue)
-        };
-    }, [products]);
+            }).format(summary?.estimated_warehouse_value ?? 0),
+            subValue: "Perkiraan",
+            subColor: "text-blue-500",
+            icon: <CircleDollarSign className="text-[#0D3B2E]" size={16} />,
+            iconBg: "bg-[#D1E7E0]"
+        }
+    ];
+
+    if (!mounted) return null;
 
     return (
         <>
-            <header className="mb-8">
-                <h2 className="text-2xl font-bold text-[#0D3B2E]">Stok Barang</h2>
-                <p className="text-sm text-gray-500">Monitor stok persediaan barang dagangan dan status SKU produk</p>
-            </header>
+            <Header
+                title="Stok Barang"
+                description="Monitor stok persediaan barang dagangan dan status SKU produk"
+            />
 
             {/* Quick Summary */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <StatCard
-                    title="TOTAL SKU"
-                    value={stats.totalSku.toLocaleString()}
-                    subValue="Total Items"
-                    subColor="text-emerald-500"
-                    progress={100}
-                    icon={<PackageSearch className="text-[#0D3B2E]" size={16} />}
-                    iconBg="bg-[#D1E7E0]"
-                />
-                <StatCard
-                    title="STOK BARANG RENDAH"
-                    value={stats.lowStockCount.toString()}
-                    subValue="Requires Attention"
-                    subColor={stats.lowStockCount > 0 ? "text-red-500" : "text-gray-400"}
-                    progress={stats.lowStockCount > 0 ? 80 : 0}
-                    icon={<OctagonAlert className={stats.lowStockCount > 0 ? "text-red-600" : "text-[#8B4513]"} size={16} />}
-                    iconBg={stats.lowStockCount > 0 ? "bg-red-50" : "bg-[#FDE7E7]"}
-                />
-                <StatCard
-                    title="ESTIMASI NILAI GUDANG"
-                    value={stats.totalValue}
-                    subValue="Estimated"
-                    subColor="text-blue-500"
-                    showProgress={false}
-                    caption="Current stock value"
-                    icon={<CircleDollarSign className="text-[#0D3B2E]" size={16} />}
-                    iconBg="bg-[#D1E7E0]"
-                />
+                {STAT_CONFIG.map((stat) => (
+                    <StatCard
+                        key={stat.key}
+                        title={stat.title}
+                        value={loading ? '...' : stat.value}
+                        subValue={stat.subValue}
+                        subColor={stat.subColor}
+                        showProgress={false}
+                        icon={stat.icon}
+                        iconBg={stat.iconBg}
+                    />
+                ))}
             </div>
 
             {loading ? (
@@ -139,5 +168,5 @@ export default function StokBarang() {
                 <StokTable products={products} />
             )}
         </>
-    )
+    );
 }

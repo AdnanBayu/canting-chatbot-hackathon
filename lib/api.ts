@@ -21,11 +21,13 @@ export async function login() {
   }
 
   const data = await response.json();
-  const token = data.access_token;
+  const token = data.access_token || data.token; // Handle both common token field names
 
   if (token) {
     localStorage.setItem('canting_token', token);
     localStorage.setItem('canting_token_expiry', (Date.now() + 1440 * 60 * 1000).toString());
+  } else {
+    console.error('Login successful but no token found in response:', data);
   }
 
   return token;
@@ -46,7 +48,8 @@ export async function authenticatedFetch(endpoint: string, options: RequestInit 
 
   let response = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
 
-  if (response.status === 401) {
+  if (response.status === 401 || response.status === 403) {
+    console.warn(`Auth error (${response.status}) for ${endpoint}, attempting re-login...`);
     token = await login();
     response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,

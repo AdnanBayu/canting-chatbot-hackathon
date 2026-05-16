@@ -3,8 +3,8 @@ import React from 'react';
 interface SummaryCardProps {
   title: string;
   value: string;
-  subValue: string;
-  subColor: string;
+  subValue?: string;
+  subColor?: string;
   progress?: number;
   showProgress?: boolean;
   caption?: string;
@@ -15,6 +15,8 @@ interface SummaryCardProps {
 export default function SummaryCard({
   title,
   value,
+  subValue,
+  subColor,
   progress,
   showProgress = true,
   caption,
@@ -37,7 +39,7 @@ export default function SummaryCard({
         <h4 className="text-3xl font-bold text-[#0D3B2E]">{value}</h4>
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress Bar or Caption */}
       {showProgress ? (
         <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
           <div style={{ width: `${progress}%` }} className="h-full bg-[#0D3B2E]"></div>

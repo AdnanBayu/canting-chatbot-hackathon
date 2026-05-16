@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from 'react';
+
+import Header from '@/components/Header';
 import ActiveShipmentList, { ShipmentItem } from '@/app/pengiriman/ActiveShipmentList';
 import ShipmentTrackingMap from '@/app/pengiriman/ShipmentTrackingMap';
 import ShipmentLogs, { ShipmentLogItem } from '@/app/pengiriman/ShipmentLogs';
@@ -40,10 +42,10 @@ export default function Pengiriman() {
 
     return (
         <div className="flex flex-col">
-            <header className="mb-8">
-                <h2 className="text-2xl font-bold text-[#0D3B2E]">Status Pengiriman</h2>
-                <p className="text-sm text-gray-500">Monitor pengiriman produk ke tangan pelanggan secara real-time</p>
-            </header>
+            <Header
+                title="Status Pengiriman"
+                description="Monitor pengiriman produk ke tangan pelanggan secara real-time"
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Left Column: Active Shipments */}

@@ -1,19 +1,16 @@
 "use client";
 
+import { MoreVertical } from 'lucide-react';
+
 import { Button } from "@/components/ui/button";
 
-const statusStyles = {
-  DIKIRIM: 'bg-[#D1E7E0] text-black',
-  DIPROSES: 'bg-orange-200 text-black',
-  TUNDA: 'bg-yellow-200 text-black',
-  DITOLAK: 'bg-red-200 text-black',
-}
+type StatusType = 'SHIPPED' | 'PENDING_PAYMENT';
 
 export interface PesananItem {
   id: string;
   name: string;
-  product: string;
-  status: keyof typeof statusStyles;
+  product: any;
+  status: StatusType;
   amount: string;
 }
 
@@ -23,6 +20,11 @@ interface PesananTableProps {
   showHead?: boolean;
   showPage?: boolean;
 }
+
+const statusStyles: Record<string, string> = {
+  SHIPPED: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  PENDING_PAYMENT: 'bg-amber-50 text-amber-700 border-amber-100',
+};
 
 export default function PesananTable({ data, showAction, showHead, showPage }: PesananTableProps) {
   return (
@@ -46,21 +48,32 @@ export default function PesananTable({ data, showAction, showHead, showPage }: P
           <tbody className="divide-y divide-gray-50">
             {data.map((item) => (
               <tr key={item.id} className="group hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 font-medium text-[#0D3B2E]">{item.id}</td>
+                {/* id pesanan */}
+                <td className="px-6 py-4 font-medium text-sm text-[#0D3B2E]">{item.id}</td>
+
+                {/* pelanggan */}
                 <td className="px-6 py-4 text-gray-500">{item.name}</td>
-                <td className="px-6 py-4 text-gray-500">{item.product}</td>
+
+                {/* produk */}
+                <td className="px-6 py-4 text-gray-500">
+                  {typeof item.product === 'object' ? item.product?.product_name : item.product}
+                </td>
+
+                {/* status */}
                 <td className="px-6 py-4">
-                  <span className={`text-[9px] font-bold px-2.5 py-1 rounded-full
-                    ${statusStyles[item.status] ?? 'bg-gray-200 text-black'}`}>
+                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border shadow-sm transition-all
+                    ${statusStyles[item.status] ?? 'bg-gray-50 text-gray-600 border-gray-100'}`}>
                     {item.status}
                   </span>
                 </td>
+
+                {/* aksi */}
                 <td className="px-6 py-4 font-bold text-[#0D3B2E]">{item.amount}</td>
                 {showAction && (
                   <td className="px-6 py-4 text-center">
-                    <Button size="sm">
-                      Aksi
-                    </Button>
+                    <button className="p-1 hover:bg-slate-200 rounded-full transition-colors text-slate-400 group-hover:text-slate-600">
+                      <MoreVertical size={18} />
+                    </button>
                   </td>
                 )}
               </tr>
@@ -69,6 +82,7 @@ export default function PesananTable({ data, showAction, showHead, showPage }: P
         </table>
       </div>
 
+      {/* pagination */}
       <div>
         {showPage && <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50">
           <p className="text-xs text-slate-400">Menampilkan 10 dari {data.length} pesanan</p>

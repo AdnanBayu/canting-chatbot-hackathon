@@ -1,25 +1,16 @@
 "use client";
 
-import { useState } from 'react';
+import Header from '@/components/Header';
 import KnowledgeUpload from '@/app/pengetahuanProduk/KnowledgeUpload';
-import DocumentLibrary, { DocumentItem } from '@/app/pengetahuanProduk/DocumentLibrary';
-
-const DOCUMENTS: DocumentItem[] = [
-    { name: 'Soga_Dyeing_Manual_v2.pdf', size: '4.2 MB', date: '24 Jan 2024', status: 'Indexed' },
-    { name: 'Parang_Sogan_Pattern_Specs.docx', size: '1.8 MB', date: '22 Jan 2024', status: 'Indexed' },
-    { name: 'Sejarah_Batik_Surabaya.pdf', size: '12.5 MB', date: '15 Jan 2024', status: 'Processing' },
-    { name: 'Manual_Canting_Elektrik.pdf', size: '2.1 MB', date: '10 Jan 2024', status: 'Indexed' },
-];
+import DocumentLibrary from '@/app/pengetahuanProduk/DocumentLibrary';
 
 export default function PengetahuanProduk() {
-    const [documents] = useState<DocumentItem[]>(DOCUMENTS);
-
     return (
         <main className="flex flex-col">
-            <header className="mb-8">
-                <h2 className="text-2xl font-bold text-[#0D3B2E]">Pengetahuan Produk</h2>
-                <p className="text-sm text-gray-500">Kelola informasi pengetahuan chatbot mengenai spesifikasi, pola batik, teknik batik, dan lain-lain</p>
-            </header>
+            <Header
+                title="Pengetahuan Produk"
+                description="Kelola informasi pengetahuan chatbot mengenai spesifikasi, pola batik, teknik batik, dan lain-lain"
+            />
 
             <div className="grid grid-cols-12 gap-6">
                 {/* Upload Section */}
@@ -29,7 +20,7 @@ export default function PengetahuanProduk() {
 
                 {/* Document Library */}
                 <div className="col-span-12">
-                    <DocumentLibrary documents={documents} />
+                    <DocumentLibrary />
                 </div>
             </div>
         </main>

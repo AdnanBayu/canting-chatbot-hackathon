@@ -1,115 +1,150 @@
+"use client";
+
 import {
     Clock,
     CheckCircle2,
-    TrendingDown,
-    MessageSquare,
-    History
+    MessageSquare
 } from 'lucide-react';
 
+import { authenticatedFetch } from '@/lib/api';
+import { useEffect, useState } from 'react';
+
+import Header from '@/components/Header';
 import StatCard from '@/components/SummaryCard';
-import RefundRequestCard from '@/app/komplain/RefundRequestCard';
-import WhatsAppLogItem from '@/app/komplain/WhatsAppLogItem';
-import type { WhatsAppTag } from '@/app/komplain/WhatsAppLogItem';
+import RefundRequestCard, { RefundRequestCardProps } from '@/app/komplain/RefundRequestCard';
+import WhatsAppLogItem, { WhatsAppLogItemProps } from '@/app/komplain/WhatsAppLogItem';
 
-const REFUND_REQUESTS = [
-    {
-        orderId: '#BTK-9021',
-        time: '2h ago',
-        tagText: 'Defective',
-        tagColor: 'bg-rose-100 text-rose-700',
-        item: 'Hand-drawn Silk Parang - Indigo',
-        description:
-            'There is a significant wax smudge in the center of the fabric. It was not mentioned in the product description. I would like a full refund.',
-        imageColor: 'bg-amber-950',
-    },
-    {
-        orderId: '#BTK-8854',
-        time: '5h ago',
-        tagText: 'Wrong Item',
-        tagColor: 'bg-slate-100 text-slate-600',
-        item: 'Mega Mendung Scarf - Crimson',
-        description:
-            'Ordered Crimson, received Azure Blue instead. Please exchange or refund the amount. Photo attached shows the color mismatch.',
-        imageColor: 'bg-red-600',
-    },
-] as const;
-
-const WHATSAPP_LOGS: { phone: string; time: string; message: string; tags: WhatsAppTag[] }[] = [
-    {
-        phone: '+62 812-4421-XXXX',
-        time: '10:45 AM',
-        message: 'Halo Admin, paket saya belum sampai sudah 5 hari dari estimasi. Mohon cek resi JNE 8829...',
-        tags: [
-            { label: 'Shipping', type: 'category' },
-            { label: 'Replied', type: 'status' },
-        ],
-    },
-    {
-        phone: '+62 857-1192-XXXX',
-        time: '09:12 AM',
-        message: 'Batiknya luntur pas dicuci pertama kali, padahal sudah pakai lerak. Bagaimana solusinya?',
-        tags: [
-            { label: 'Quality', type: 'category' },
-            { label: 'Urgent', type: 'urgent' },
-        ],
-    },
-    {
-        phone: '+62 813-8821-XXXX',
-        time: 'Yesterday',
-        message: 'Apakah ada stok untuk motif Parang Kencana ukuran XL? Saya butuh 10 pcs untuk seragam.',
-        tags: [
-            { label: 'Inquiry', type: 'category' },
-            { label: 'Closed', type: 'status' },
-        ],
-    },
-    {
-        phone: '+62 821-3321-XXXX',
-        time: 'Yesterday',
-        message: 'Terima kasih admin, refund sudah masuk ke rekening saya. Pelayanan sangat baik.',
-        tags: [
-            { label: 'Feedback', type: 'category' },
-            { label: 'Closed', type: 'status' },
-        ],
-    },
-];
+interface ComplaintSummary {
+    pending_tickets: number;
+    resolved_today: number;
+    average_response_time_hours: number;
+    refund_rate_percentage: number;
+}
 
 export default function Komplain() {
+    const [loading, setLoading] = useState(true);
+
+    const [summary, setSummary] = useState<ComplaintSummary | null>(null);
+    const [complaintRequests, setComplaintRequests] = useState<RefundRequestCardProps[]>([]);
+    const [logs, setLogs] = useState<WhatsAppLogItemProps[]>([]);
+
+    const fetchRefundRequests = async () => {
+        try {
+            setLoading(true);
+
+            // fetch stock data from api
+            const [summaryRes, complaintRes, logRes] = await Promise.all([
+                authenticatedFetch('/complaints/summary'),
+                authenticatedFetch('/complaints/active-requests'),
+                authenticatedFetch('/complaints/logs'),
+            ]);
+
+            // process summary card data
+            if (summaryRes.ok) {
+                const summaryData = await summaryRes.json();
+                setSummary(summaryData);
+            }
+
+            // process complaint data
+            if (complaintRes.ok) {
+                const result = await complaintRes.json();
+                const rawComplaints = result || [];
+                console.log(result);
+
+                const mappedComplaintRequests: RefundRequestCardProps[] = rawComplaints.map((item: any) => {
+                    return {
+                        request_id: item.request_id,
+                        full_id: item.full_id,
+                        order_id: item.order_id,
+                        buyer_phone: item.buyer_phone,
+                        requested_at: item.requested_at.split('T')[0],
+                        issue_type: item.issue_type,
+                        product_name: item.product_name,
+                        customer_message: item.customer_message,
+                    };
+                });
+                setComplaintRequests(mappedComplaintRequests);
+            }
+
+            // process whatsapp log data
+            if (logRes.ok) {
+                const result = await logRes.json();
+                const rawLogs = result || [];
+
+                const mappedLogs: WhatsAppLogItemProps[] = rawLogs.map((item: any) => {
+                    return {
+                        phone_number: item.phone_number.slice(0, 13),
+                        // phone_number: item.phone_number.slice,   there are some non regular phone number
+                        timestamp: item.timestamp.split('T')[0],
+                        message_snippet: item.message_snippet,
+                        tags: item.tags,
+                    };
+                });
+                setLogs(mappedLogs);
+            }
+
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchRefundRequests();
+    }, []);
+
+    const SUMMARY_CONFIG = [
+        {
+            key: 'pending',
+            title: "Tertunda",
+            value: (summary?.pending_tickets ?? 0).toString(),
+            subValue: "Butuh penanganan",
+            subColor: "text-rose-500",
+            icon: <Clock className="text-rose-600" size={16} />,
+            iconBg: "bg-rose-50"
+        },
+        {
+            key: 'resolved',
+            title: "Teratasi Hari Ini",
+            value: (summary?.resolved_today ?? 0).toString(),
+            subValue: "Selesai",
+            subColor: "text-emerald-500",
+            icon: <CheckCircle2 className="text-[#0D3B2E]" size={16} />,
+            iconBg: "bg-[#D1E7E0]"
+        },
+        {
+            key: 'refund_rate',
+            title: "Refund Rate",
+            value: `${(summary?.refund_rate_percentage ?? 0).toFixed(1)}%`,
+            subValue: "Indikator kualitas",
+            subColor: "text-blue-500",
+            icon: <MessageSquare className="text-blue-600" size={16} />,
+            iconBg: "bg-blue-50"
+        }
+    ];
+
     return (
         <div className="flex flex-col">
-            <header className="mb-8">
-                <h2 className="text-2xl font-bold text-[#0D3B2E]">Komplain</h2>
-                <p className="text-sm text-gray-500">Kelola ketidakpuasan pelanggan dan pengembalian barang dengan presisi</p>
-            </header>
+            <Header
+                title="Komplain"
+                description="Kelola ketidakpuasan pelanggan dan pengembalian barang dengan presisi"
+            />
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-                <StatCard
-                    icon={<Clock size={16} className="text-rose-600" />}
-                    iconBg="bg-rose-50"
-                    title="Tertunda"
-                    value="12"
-                    subValue=""
-                    subColor=""
-                    showProgress={false}
-                />
-                <StatCard
-                    icon={<CheckCircle2 size={16} className="text-[#0D3B2E]" />}
-                    iconBg="bg-[#D1E7E0]"
-                    title="Teratasi Hari Ini"
-                    value="48"
-                    subValue=""
-                    subColor=""
-                    showProgress={false}
-                />
-                <StatCard
-                    icon={<TrendingDown size={16} className="text-rose-600" />}
-                    iconBg="bg-rose-50"
-                    title="Refund Rate"
-                    value="2.1%"
-                    subValue=""
-                    subColor=""
-                    showProgress={false}
-                />
+                {SUMMARY_CONFIG.map((stat) => (
+                    <StatCard
+                        key={stat.key}
+                        title={stat.title}
+                        value={loading ? '...' : stat.value}
+                        subValue={stat.subValue}
+                        subColor={stat.subColor}
+                        showProgress={false}
+                        icon={stat.icon}
+                        iconBg={stat.iconBg}
+                    />
+                ))}
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -120,9 +155,19 @@ export default function Komplain() {
                         {/* <button className="text-emerald-700 text-xs font-bold hover:underline">Lihat Semua</button> */}
                     </div>
 
-                    {REFUND_REQUESTS.map((req) => (
-                        <RefundRequestCard key={req.orderId} {...req} />
-                    ))}
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-slate-100">
+                            <p className="text-slate-400 text-sm">Memuat komplain...</p>
+                        </div>
+                    ) : complaintRequests.length > 0 ? (
+                        complaintRequests.map((req) => (
+                            <RefundRequestCard key={req.request_id} {...req} />
+                        ))
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-slate-100">
+                            <p className="text-slate-400 text-sm">Tidak ada komplain aktif</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* WhatsApp Log */}
@@ -134,9 +179,15 @@ export default function Komplain() {
 
                     <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
                         <div className="p-6">
-                            {WHATSAPP_LOGS.map((log, i) => (
-                                <WhatsAppLogItem key={i} {...log} />
-                            ))}
+                            {loading ? (
+                                <p className="text-slate-400 text-sm py-4 text-center">Memuat histori...</p>
+                            ) : logs.length > 0 ? (
+                                logs.map((log, i) => (
+                                    <WhatsAppLogItem key={i} {...log} />
+                                ))
+                            ) : (
+                                <p className="text-slate-400 text-sm py-4 text-center">Tidak ada histori pesan</p>
+                            )}
                         </div>
                         {/* <button className="w-full py-4 border-t border-dashed border-slate-200 text-slate-400 text-xs font-medium flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors">
                             <History size={14} />

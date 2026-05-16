@@ -1,20 +1,23 @@
 "use client";
 
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Package } from 'lucide-react';
 import StockKurang from './StockKurang';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 
-interface StockWarningSummaryProps {
-  items: {
-    label: string;
-    warning: string;
-    icon: React.ReactNode;
-  }[];
+export interface InventoryAlert {
+  item_name: string;
+  remaining_stock: number;
+  unit: string;
+  status: string;
 }
 
-export default function StockWarningSummary({ items }: StockWarningSummaryProps) {
+interface StockWarningTableProps {
+  items: InventoryAlert[];
+}
+
+export default function StockWarningSummary({ items }: StockWarningTableProps) {
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
       <div className="flex justify-between items-center mb-6">
@@ -26,9 +29,9 @@ export default function StockWarningSummary({ items }: StockWarningSummaryProps)
         {items.map((item, index) => (
           <StockKurang
             key={index}
-            label={item.label}
-            warning={item.warning}
-            icon={item.icon}
+            label={item.item_name}
+            warning={`Sisa ${item.remaining_stock} ${item.unit}`}
+            icon={<div className="bg-orange-50 p-2 rounded text-orange-500"><Package size={16} /></div>}
           />
         ))}
       </div>

@@ -1,96 +1,141 @@
 "use client";
 
 import {
-  LayoutDashboard,
-  Package,
-  BookOpen,
   Loader,
   BanknoteArrowDown,
   ShoppingCart,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
 
-import StatCard from '@/components/SummaryCard';
-import PesananTable, { PesananItem } from '@/components/PesananTable';
-import CustomerCareSummary from '@/components/CustomerCareSummary';
-import StockWarningSummary from '@/components/StockWarningSummary';
+import { useState, useEffect } from 'react';
 import { authenticatedFetch } from '@/lib/api';
 
-const STOCK_WARNINGS = [
-  {
-    label: "Indigo Dye Powder",
-    warning: "Only 1.2kg left",
-    icon: <div className="bg-blue-50 p-2 rounded text-blue-500"><LayoutDashboard size={16} /></div>
-  },
-  {
-    label: "Primisima Cotton",
-    warning: "Only 2 rolls left",
-    icon: <div className="bg-purple-50 p-2 rounded text-purple-500"><Package size={16} /></div>
-  },
-  {
-    label: "Canting Tip #2",
-    warning: "Low stock: 5 units",
-    icon: <div className="bg-orange-50 p-2 rounded text-orange-500"><BookOpen size={16} /></div>
-  }
-];
+import Header from '@/components/Header';
+import StatCard from '@/components/SummaryCard';
+import PesananTable, { PesananItem } from '@/components/PesananTable';
+import CustomerCareSummary, { CustomerCareAPI } from '@/components/CustomerCareSummary';
+import StockWarningSummary, { InventoryAlert } from '@/components/StockWarningSummary';
+
+interface DashboardSummary {
+  metrics: {
+    sales_today: {
+      total: number;
+      growth_percentage: number;
+      currency: string;
+    };
+    revenue_month: {
+      current: number;
+      target_percentage: number;
+      currency: string;
+    };
+    active_orders: {
+      total: number;
+      priority_count: number;
+      ready_to_ship: number;
+    };
+  };
+}
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+
+  const [summaryData, setSummaryData] = useState<DashboardSummary | null>(null);
   const [recentOrders, setRecentOrders] = useState<PesananItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [stockAlerts, setStockAlerts] = useState<InventoryAlert[]>([]);
+  const [customerCare, setCustomerCare] = useState<CustomerCareAPI | null>(null);
+
+  const fetchDashboardData = async () => {
+    setLoading(true);
+
+    // fetch datas from api
+    try {
+      const [ordersRes, summaryRes, alertsRes, customerCareRes] = await Promise.all([
+        authenticatedFetch('/orders?limit=5'),
+        authenticatedFetch('/dashboard/summary'),
+        authenticatedFetch('/dashboard/inventory/alerts'),
+        authenticatedFetch('/complaints/summary')
+      ]);
+
+      // process summary data
+      if (summaryRes.ok) {
+        const summary = await summaryRes.json();
+        console.log('Dashboard summary response:', JSON.stringify(summary, null, 2));
+        setSummaryData(summary);
+      }
+
+      // process order data
+      if (ordersRes.ok) {
+        const result = await ordersRes.json();
+        const rawOrders = Array.isArray(result) ? result : (result.data || []);
+
+        const mappedOrders: PesananItem[] = rawOrders.map((item: any) => {
+
+          return {
+            id: item.order_id,
+            name: item.customer_name,
+            product: item.product_summary || "Tanpa Produk",
+            status: item.status || 'ALL',
+            amount: item.amount
+          };
+        });
+        setRecentOrders(mappedOrders);
+      }
+
+      // process customer care alert data
+      if (customerCareRes.ok) {
+        const data = await customerCareRes.json();
+        setCustomerCare(data);
+      }
+
+      // process stock alerts data
+      if (alertsRes.ok) {
+        const alerts = await alertsRes.json();
+        setStockAlerts(alerts);
+      }
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await authenticatedFetch('/dashboard/orders/recent');
-
-        if (response.ok) {
-          const result = await response.json();
-          const rawOrders = Array.isArray(result) ? result : (result.data || []);
-
-          const mappedOrders: PesananItem[] = rawOrders.map((item: any) => {
-            let uiStatus: any = 'TUNDA';
-            const apiStatus = item.status?.toUpperCase() || '';
-
-            if (apiStatus.includes('SENT') || apiStatus.includes('COMPLETED') || apiStatus.includes('DELIVERED')) {
-              uiStatus = 'DIKIRIM';
-            } else if (apiStatus.includes('PROCESS') || apiStatus.includes('PAID')) {
-              uiStatus = 'DIPROSES';
-            } else if (apiStatus.includes('CANCEL') || apiStatus.includes('FAIL') || apiStatus.includes('REJECT') || apiStatus.includes('DITOLAK')) {
-              uiStatus = 'DITOLAK';
-            }
-
-            return {
-              id: item.id,
-              name: item.customer,
-              product: item.product,
-              status: uiStatus,
-              amount: new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                maximumFractionDigits: 0
-              }).format(item.total || 0)
-            };
-          });
-
-          setRecentOrders(mappedOrders);
-        }
-      } catch (error) {
-
-        console.error('Error fetching orders:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchOrders();
+    fetchDashboardData();
   }, []);
+
+  const SUMMARY_CONFIG = [
+    {
+      key: "penjualan",
+      title: "PENJUALAN HARI INI",
+      value: summaryData ? summaryData.metrics.sales_today.total.toString() : (loading ? '...' : 'Rp 0'),
+      subColor: "text-emerald-500",
+      icon: <Loader className="text-[#0D3B2E]" size={16} />,
+      iconBg: "bg-[#D1E7E0]"
+    },
+    {
+      key: 'pendapatan',
+      title: "PENDAPATAN BULAN INI",
+      value: summaryData ? summaryData.metrics.revenue_month.current.toString() : (loading ? '...' : 'Rp 0'),
+      subColor: "text-gray-400",
+      icon: <BanknoteArrowDown className="text-[#0D3B2E]" size={16} />,
+      iconBg: "bg-[#D1E7E0]"
+    },
+    {
+      key: 'pesanan',
+      title: "PESANAN AKTIF",
+      value: summaryData ? summaryData.metrics.active_orders.total.toString() : (loading ? '...' : '0'),
+      subColor: "text-red-500",
+      icon: <ShoppingCart className="text-[#0D3B2E]" size={16} />,
+      iconBg: "bg-[#D1E7E0]"
+    }
+  ];
 
   return (
     <>
-      <header className="mb-8">
-        <h2 className="text-2xl font-bold text-[#0D3B2E]">Ringkasan Usaha</h2>
-        <p className="text-sm text-gray-500">Monitor bisnis UMKM batik milik anda</p>
-      </header>
+      <Header
+        title="Ringkasan Usaha"
+        description="Monitor bisnis UMKM batik milik anda"
+      />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Left Column */}
@@ -98,34 +143,17 @@ export default function Home() {
 
           {/* Quick Summary */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <StatCard
-              title="PENJUALAN HARI INI"
-              value="Rp 4.2M"
-              subValue="+12%"
-              subColor="text-emerald-500"
-              progress={45}
-              icon={<Loader className="text-[#0D3B2E]" size={16} />}
-              iconBg="bg-[#D1E7E0]"
-            />
-            <StatCard
-              title="PENDAPATAN BULAN INI"
-              value="Rp 82M"
-              subValue="82%"
-              subColor="text-gray-400"
-              progress={82}
-              icon={<BanknoteArrowDown className="text-[#0D3B2E]" size={16} />}
-              iconBg="bg-[#D1E7E0]"
-            />
-            <StatCard
-              title="PESANAN AKTIF"
-              value="48"
-              subValue="8 Priority"
-              subColor="text-red-500"
-              showProgress={false}
-              caption="12 ready to ship"
-              icon={<ShoppingCart className="text-[#0D3B2E]" size={16} />}
-              iconBg="bg-[#D1E7E0]"
-            />
+            {SUMMARY_CONFIG.map((stat) => (
+              <StatCard
+                key={stat.key}
+                title={stat.title}
+                value={loading ? '...' : stat.value}
+                subColor={stat.subColor}
+                showProgress={false}
+                icon={stat.icon}
+                iconBg={stat.iconBg}
+              />
+            ))}
           </div>
 
           {/* Sales Chart Placeholder */}
@@ -170,7 +198,7 @@ export default function Home() {
               <a href="/pesanan" className="text-xs font-bold text-[#0D3B2E] hover:underline">Lihat Semua</a>
             </div>
             <div className="overflow-x-auto">
-              {isLoading ? (
+              {loading ? (
                 <div className="flex justify-center items-center py-10">
                   <Loader className="animate-spin text-[#0D3B2E]" size={24} />
                   <span className="ml-2 text-gray-500">Loading orders...</span>
@@ -187,13 +215,15 @@ export default function Home() {
         <div className="space-y-6">
           {/* Customer Care */}
           <CustomerCareSummary
-            complaintsCount={3}
-            refundsCount={1}
+            complaintsCount={customerCare?.pending_tickets || 0}
+            refundsCount={customerCare?.resolved_today || 0}
+            isLoading={loading}
           />
 
           {/* Stock Warning */}
-          <StockWarningSummary items={STOCK_WARNINGS} />
+          <StockWarningSummary items={stockAlerts} />
         </div>
+
       </div>
     </>
   );
