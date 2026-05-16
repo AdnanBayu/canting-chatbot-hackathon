@@ -8,8 +8,6 @@
 [![WhatsApp](https://img.shields.io/badge/Channel-WhatsApp-25D366?style=for-the-badge&logo=whatsapp)](https://www.whatsapp.com/)
 
 **Reducing operational drag for 385,054 Batik SMEs in Surabaya — one message at a time.**
-[🚀 Live Demo](#) · [📖 Docs](#) · [🐛 Report Bug](#) · [💡 Request Feature](#)
-
 ![CANTING Logo](frontend/public/logo.png)
 
 </div>
@@ -174,7 +172,6 @@ The **Canting Chatbot Dashboard** provides a centralized web interface to manage
 |------------|---------|
 | **GCP (Google Cloud Platform)** | Hosting and compute |
 | **PostgreSQL** | Primary operational database |
-| **JNE / JNT API** | Logistics and shipment tracking |
 
 ---
 
@@ -316,7 +313,7 @@ CANTING directly embodies the **Antigravity 2026** theme of **Efficiency & Speed
 ### 📊 Projected Impact
 | Metric | Before CANTING | After CANTING |
 |--------|---------------|---------------|
-| Time to verify payment | ~5 minutes | < 10 seconds |
+| Time to verify payment | ~5 minutes | < 30 seconds |
 | Stock update frequency | Daily/weekly | Real-time |
 | Buyer query response | Hours (manual) | Instant (AI) |
 | Report generation | Hours (Excel) | On-demand (1 click) |
@@ -324,9 +321,6 @@ CANTING directly embodies the **Antigravity 2026** theme of **Efficiency & Speed
 ---
 
 ## 👥 Team
-
-Built with ❤️ for Batik UMKM Surabaya at **Antigravity 2026** by GDG Surabaya.
-
 | Name | Role |
 |------|------|
 | **M. Adnan Bayu Firdaus** | Frontend & Product Development |
@@ -340,5 +334,3 @@ Built with ❤️ for Batik UMKM Surabaya at **Antigravity 2026** by GDG Surabay
 
 [![GDG Surabaya](https://img.shields.io/badge/GDG-Surabaya-4285F4?style=flat-square&logo=google)](https://gdg.community.dev/gdg-surabaya/)
 [![Antigravity 2026](https://img.shields.io/badge/Hackathon-Antigravity%202026-4f46e5?style=flat-square)](https://gdg.community.dev/gdg-surabaya/)
-
-*Made in Surabaya 🏙️ — the city where batik tells stories.*
