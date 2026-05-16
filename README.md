@@ -10,7 +10,7 @@
 **Reducing operational drag for 385,054 Batik SMEs in Surabaya — one message at a time.**
 [🚀 Live Demo](#) · [📖 Docs](#) · [🐛 Report Bug](#) · [💡 Request Feature](#)
 
-![CANTING Logo](public/logo.png)
+![CANTING Logo](frontend/public/logo.png)
 
 </div>
 
